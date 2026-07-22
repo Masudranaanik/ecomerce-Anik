@@ -1,0 +1,16 @@
+- `[x]` User Authentication & Order Flow
+    - `[x]` Add new routes to `Screen.kt`
+    - `[x]` Create `LoginScreen.kt`
+    - `[x]` Create `SignUpScreen.kt`
+    - `[x]` Create `OrderSuccessScreen.kt`
+    - `[x]` Update `NavGraph.kt` with new flow
+    - `[x]` Implement `clearCart()` in `MainViewModel.kt`
+    - `[x]` Link `CheckoutScreen.kt` to `OrderSuccessScreen.kt`
+- `[x]` Home Screen Enhancement
+    - `[x]` Add Search Bar to `HomeScreen.kt`
+- `[x]` Navigation & Theme Refresh
+- `[x]` Configuration & Setup
+- `[x]` Data Layer Implementation
+- `[x]` Domain Layer Implementation
+- `[x]` UI Layer Implementation (Initial)
+- `[x]` Dependency Injection (Hilt)

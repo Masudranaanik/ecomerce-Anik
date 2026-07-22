@@ -1,0 +1,25 @@
+- `[/]` Configuration & Setup
+    - `[ ]` Update `libs.versions.toml`
+    - `[ ]` Update project `build.gradle.kts`
+    - `[ ]` Update app `build.gradle.kts`
+    - `[ ]` Gradle Sync
+- `[ ]` Data Layer Implementation
+    - `[ ]` Room Database, Entities, and Daos
+    - `[ ]` Retrofit API Service and DTOs
+    - `[ ]` Repository Implementation
+- `[ ]` Domain Layer Implementation
+    - `[ ]` Domain Models (Product, Category, CartItem)
+- `[ ]` UI Layer Implementation
+    - `[ ]` Material 3 Theme & Colors
+    - `[ ]` Navigation Setup
+    - `[ ]` Common UI Components (Cards, Buttons, etc.)
+    - `[ ]` Splash & Welcome Screens
+    - `[ ]` Home Screen (Banner, Categories, Featured)
+    - `[ ]` Catalog & Search/Filter Screen
+    - `[ ]` Product Details Screen
+    - `[ ]` Cart & Checkout Screen
+- `[ ]` Dependency Injection (Hilt)
+    - `[ ]` Application class and Modules
+- `[ ]` Final Integration & Verification
+    - `[ ]` Update `MainActivity.kt`
+    - `[ ]` Build & Run Verification
