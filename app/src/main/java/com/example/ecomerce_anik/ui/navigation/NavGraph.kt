@@ -31,6 +31,9 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(Screen.OrderSuccess.route) {
             OrderSuccessScreen(navController = navController)
         }
+        composable(Screen.Admin.route) {
+            AdminScreen(navController = navController, viewModel = viewModel)
+        }
         composable("main_dashboard") {
             MainScreen(viewModel = viewModel, rootNavController = navController)
         }

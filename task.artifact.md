@@ -1,8 +1,13 @@
-- `[x]` Guest-First Flow & Ultra UI
-    - `[x]` Bypass Login on Startup in `NavGraph.kt` & `WelcomeScreen.kt`
-    - `[x]` Redesign Profile Screen as Guest Mode in `ProfileScreen.kt`
-    - `[x]` Overhaul `ProductItem` with "Mind-Blowing" Design in `HomeScreen.kt`
-    - `[x]` Link Profile Login Button to Root NavGraph
+- `[/]` Admin Panel & Local Products Implementation
+    - `[ ]` Create `ProductEntity.kt` for local storage
+    - `[ ]` Update `AppDatabase.kt` & DAOs
+    - `[ ]` Update `ProductRepository` to merge Local & Remote data
+    - `[ ]` Implement `addProduct` logic in `MainViewModel.kt`
+    - `[ ]` Create `AdminScreen.kt` UI
+    - `[ ]` Link Admin Panel in `ProfileScreen.kt`
+- `[/]` "Stunning" Product UI Overhaul
+    - `[ ]` Redesign `ProductItem` with dynamic height & premium styling
+    - `[ ]` Fix Price visibility issue
 - `[x]` User Authentication & Order Flow
 - `[x]` Home Screen Enhancement
 - `[x]` Navigation & Theme Refresh

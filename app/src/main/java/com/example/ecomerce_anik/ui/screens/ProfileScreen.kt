@@ -70,10 +70,11 @@ fun ProfileScreen(rootNavController: NavController) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        ProfileMenuItem("My Orders", Icons.Default.List)
-        ProfileMenuItem("Wishlist", Icons.Default.Favorite)
-        ProfileMenuItem("Settings", Icons.Default.Settings)
-        ProfileMenuItem("Support", Icons.Default.Call)
+        ProfileMenuItem("Admin Dashboard", Icons.Default.Settings) {
+            rootNavController.navigate(Screen.Admin.route)
+        }
+        ProfileMenuItem("My Orders", Icons.Default.List) {}
+        ProfileMenuItem("Wishlist", Icons.Default.Favorite) {}
         
         Spacer(modifier = Modifier.weight(1f))
         
@@ -87,9 +88,9 @@ fun ProfileScreen(rootNavController: NavController) {
 }
 
 @Composable
-fun ProfileMenuItem(title: String, icon: ImageVector) {
+fun ProfileMenuItem(title: String, icon: ImageVector, onClick: () -> Unit) {
     Surface(
-        onClick = { /* Navigate */ },
+        onClick = onClick,
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         color = Color.Transparent
     ) {

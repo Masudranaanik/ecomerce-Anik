@@ -21,12 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.ecomerce_anik.domain.model.Product
 import com.example.ecomerce_anik.ui.navigation.Screen
 import com.example.ecomerce_anik.ui.viewmodel.MainViewModel
@@ -36,7 +38,7 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
-    val products by viewModel.products.collectAsState()
+    val products by viewModel.allProducts.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -224,14 +226,13 @@ fun ProductItem(product: Product, onProductClick: () -> Unit, onAddClick: () -> 
         onClick = onProductClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(320.dp), // Increased height to ensure everything fits
+            .height(350.dp), // Height fixed for visibility
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Image Section
+            // Premium Image Area
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -240,7 +241,10 @@ fun ProductItem(product: Product, onProductClick: () -> Unit, onAddClick: () -> 
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = product.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(product.image)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
@@ -248,74 +252,78 @@ fun ProductItem(product: Product, onProductClick: () -> Unit, onAddClick: () -> 
                         .fillMaxSize()
                 )
                 
-                // Floating Badge
+                // Top-left Badge
                 Surface(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(12.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = RoundedCornerShape(8.dp)
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = "New",
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                // Wishlist Button
-                IconButton(
-                    onClick = { /* Toggle wishlist */ },
+                // Top-right Wishlist (Floating)
+                Surface(
+                    shape = CircleShape,
+                    color = Color.White.copy(alpha = 0.9f),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(4.dp)
+                        .padding(8.dp)
+                        .size(36.dp),
+                    shadowElevation = 4.dp
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                }
-            }
-
-            // Info Section
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = product.title,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 18.sp
-                    )
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { /* Toggle wishlist */ }) {
                         Icon(
-                            imageVector = Icons.Default.Star,
+                            imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = null,
-                            tint = Color(0xFFFFB800),
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Text(
-                            text = " ${product.rating.rate}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.Gray
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
+            }
 
-                Spacer(modifier = Modifier.height(8.dp))
+            // Clean Info Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = product.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    lineHeight = 20.sp
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = Color(0xFFFFD700),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = " ${product.rating.rate}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -331,22 +339,22 @@ fun ProductItem(product: Product, onProductClick: () -> Unit, onAddClick: () -> 
                         Text(
                             text = "$${product.price}",
                             style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.ExtraBold,
+                            fontWeight = FontWeight.Black,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
                     
-                    // Action Button
+                    // Stunning Action Button
                     Surface(
                         onClick = onAddClick,
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(42.dp)
+                        modifier = Modifier.size(44.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = null,
-                            modifier = Modifier.padding(8.dp),
+                            modifier = Modifier.padding(10.dp),
                             tint = Color.White
                         )
                     }

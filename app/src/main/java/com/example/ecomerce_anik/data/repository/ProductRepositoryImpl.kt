@@ -13,7 +13,8 @@ import javax.inject.Inject
 class ProductRepositoryImpl @Inject constructor(
     private val api: ApiService,
     private val cartDao: CartDao,
-    private val wishlistDao: WishlistDao
+    private val wishlistDao: WishlistDao,
+    private val localProductDao: LocalProductDao
 ) : ProductRepository {
 
     private val dummyProducts = listOf(
@@ -34,6 +35,16 @@ class ProductRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.success(dummyProducts) // Fallback to dummy data on internet error
         }
+    }
+
+    override fun getLocalProducts(): Flow<List<Product>> {
+        return localProductDao.getAllLocalProducts().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun insertLocalProduct(product: Product) {
+        localProductDao.insertProduct(product.toLocalEntity())
     }
 
     override suspend fun getProductById(id: Int): Result<Product> {
@@ -113,3 +124,14 @@ fun Product.toCartEntity() = CartEntity(id, title, price, image, 1)
 
 fun WishlistEntity.toDomain() = Product(id, title, price, "", "", image, Rating(0.0, 0))
 fun Product.toWishlistEntity() = WishlistEntity(id, title, price, image)
+
+fun ProductEntity.toDomain() = Product(id, title, price, description, category, image, Rating(rating, ratingCount))
+fun Product.toLocalEntity() = ProductEntity(
+    title = title,
+    price = price,
+    description = description,
+    category = category,
+    image = image,
+    rating = rating.rate,
+    ratingCount = rating.count
+)

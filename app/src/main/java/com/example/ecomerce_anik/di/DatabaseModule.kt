@@ -23,7 +23,8 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "ecom_db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -31,4 +32,7 @@ object DatabaseModule {
 
     @Provides
     fun provideWishlistDao(db: AppDatabase): WishlistDao = db.wishlistDao()
+
+    @Provides
+    fun provideLocalProductDao(db: AppDatabase): com.example.ecomerce_anik.data.local.LocalProductDao = db.localProductDao()
 }

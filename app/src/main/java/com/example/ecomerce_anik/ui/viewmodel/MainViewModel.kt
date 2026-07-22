@@ -18,6 +18,14 @@ class MainViewModel @Inject constructor(
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products = _products.asStateFlow()
 
+    private val localProducts = repository.getLocalProducts().stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
+    )
+
+    val allProducts = combine(_products, localProducts) { remote, local ->
+        local + remote
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _categories = MutableStateFlow<List<String>>(emptyList())
     val categories = _categories.asStateFlow()
 
@@ -134,7 +142,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val filteredProducts = combine(_products, _searchQuery, _sortOrder) { products, query, order ->
+    fun addProduct(
+        title: String,
+        price: Double,
+        description: String,
+        category: String,
+        image: String
+    ) {
+        viewModelScope.launch {
+            val newProduct = Product(
+                id = 0, // Room will autogenerate
+                title = title,
+                price = price,
+                description = description,
+                category = category,
+                image = image,
+                rating = com.example.ecomerce_anik.domain.model.Rating(0.0, 0)
+            )
+            repository.insertLocalProduct(newProduct)
+            _snackbarEvent.emit("📦 Product added successfully!")
+        }
+    }
+
+    val filteredProducts = combine(allProducts, _searchQuery, _sortOrder) { products, query, order ->
         val filtered = if (query.isBlank()) {
             products
         } else {
