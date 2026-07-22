@@ -70,7 +70,7 @@ fun WelcomeScreen(navController: NavController) {
             
             Button(
                 onClick = {
-                    navController.navigate(Screen.Login.route) {
+                    navController.navigate("main_dashboard") {
                         popUpTo(Screen.Welcome.route) { inclusive = true }
                     }
                 },

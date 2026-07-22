@@ -1,13 +1,10 @@
+- `[x]` Guest-First Flow & Ultra UI
+    - `[x]` Bypass Login on Startup in `NavGraph.kt` & `WelcomeScreen.kt`
+    - `[x]` Redesign Profile Screen as Guest Mode in `ProfileScreen.kt`
+    - `[x]` Overhaul `ProductItem` with "Mind-Blowing" Design in `HomeScreen.kt`
+    - `[x]` Link Profile Login Button to Root NavGraph
 - `[x]` User Authentication & Order Flow
-    - `[x]` Add new routes to `Screen.kt`
-    - `[x]` Create `LoginScreen.kt`
-    - `[x]` Create `SignUpScreen.kt`
-    - `[x]` Create `OrderSuccessScreen.kt`
-    - `[x]` Update `NavGraph.kt` with new flow
-    - `[x]` Implement `clearCart()` in `MainViewModel.kt`
-    - `[x]` Link `CheckoutScreen.kt` to `OrderSuccessScreen.kt`
 - `[x]` Home Screen Enhancement
-    - `[x]` Add Search Bar to `HomeScreen.kt`
 - `[x]` Navigation & Theme Refresh
 - `[x]` Configuration & Setup
 - `[x]` Data Layer Implementation

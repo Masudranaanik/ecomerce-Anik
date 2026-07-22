@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.ecomerce_anik.ui.navigation.Screen
 import com.example.ecomerce_anik.ui.viewmodel.MainViewModel
 
 @Composable
-fun WishlistScreen(viewModel: MainViewModel) {
+fun WishlistScreen(viewModel: MainViewModel, navController: NavController) {
     val wishlistItems by viewModel.wishlistItems.collectAsState()
 
     Column(
@@ -46,9 +48,15 @@ fun WishlistScreen(viewModel: MainViewModel) {
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(wishlistItems) { product ->
-                    ProductItem(product) {
-                        // Navigate to details if needed, but for now just show
-                    }
+                    ProductItem(
+                        product = product,
+                        onProductClick = {
+                            navController.navigate(Screen.ProductDetails.passId(product.id))
+                        },
+                        onAddClick = {
+                            viewModel.addToCart(product)
+                        }
+                    )
                 }
             }
         }

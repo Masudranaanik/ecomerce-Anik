@@ -64,8 +64,8 @@ fun MainScreen(viewModel: MainViewModel, rootNavController: NavHostController) {
             composable(Screen.Home.route) { HomeScreen(navController, viewModel) }
             composable(Screen.Catalog.route) { CatalogScreen(navController, viewModel) }
             composable(Screen.Cart.route) { CartScreen(viewModel, navController) }
-            composable(Screen.Wishlist.route) { WishlistScreen(viewModel) }
-            composable(Screen.Profile.route) { ProfileScreen() }
+            composable(Screen.Wishlist.route) { WishlistScreen(viewModel, navController) }
+            composable(Screen.Profile.route) { ProfileScreen(rootNavController) }
             composable(Screen.Checkout.route) { CheckoutScreen(navController, rootNavController, viewModel) }
             composable(Screen.ProductDetails.route) { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
