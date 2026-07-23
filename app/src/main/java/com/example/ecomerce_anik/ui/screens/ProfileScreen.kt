@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,8 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ecomerce_anik.ui.navigation.Screen
 
+import com.example.ecomerce_anik.ui.viewmodel.MainViewModel
+
 @Composable
-fun ProfileScreen(rootNavController: NavController) {
+fun ProfileScreen(rootNavController: NavController, viewModel: MainViewModel) {
+    val currentUser by viewModel.currentUser.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,24 +54,51 @@ fun ProfileScreen(rootNavController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Guest User",
+            text = currentUser?.email ?: "Guest User",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = "Log in to sync your joyful data",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = if (currentUser != null) "Gold Member" else "Joyful Explorer",
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Points: 450",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = { rootNavController.navigate(Screen.Login.route) },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("Login / Register", fontWeight = FontWeight.Bold)
+        if (currentUser == null) {
+            Button(
+                onClick = { rootNavController.navigate(Screen.Login.route) },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Login / Register", fontWeight = FontWeight.Bold)
+            }
+        } else {
+            Button(
+                onClick = { viewModel.signOut() },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+            ) {
+                Text("Sign Out", fontWeight = FontWeight.Bold)
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -73,8 +106,13 @@ fun ProfileScreen(rootNavController: NavController) {
         ProfileMenuItem("Admin Dashboard", Icons.Default.Settings) {
             rootNavController.navigate(Screen.Admin.route)
         }
-        ProfileMenuItem("My Orders", Icons.Default.List) {}
-        ProfileMenuItem("Wishlist", Icons.Default.Favorite) {}
+        ProfileMenuItem("My Orders", Icons.Default.List) {
+            // Future feature: Order list
+        }
+        ProfileMenuItem("Wishlist", Icons.Default.Favorite) {
+            // Already accessible from bottom bar, but added for realism
+        }
+        ProfileMenuItem("Help Center", Icons.Default.Call) {}
         
         Spacer(modifier = Modifier.weight(1f))
         

@@ -1,13 +1,11 @@
-- `[/]` Admin Panel & Local Products Implementation
-    - `[ ]` Create `ProductEntity.kt` for local storage
-    - `[ ]` Update `AppDatabase.kt` & DAOs
-    - `[ ]` Update `ProductRepository` to merge Local & Remote data
-    - `[ ]` Implement `addProduct` logic in `MainViewModel.kt`
-    - `[ ]` Create `AdminScreen.kt` UI
-    - `[ ]` Link Admin Panel in `ProfileScreen.kt`
-- `[/]` "Stunning" Product UI Overhaul
-    - `[ ]` Redesign `ProductItem` with dynamic height & premium styling
-    - `[ ]` Fix Price visibility issue
+- `[x]` Firebase Auth Hang Fix
+    - `[x]` Update `libs.versions.toml` with coroutines-play-services
+    - `[x]` Update app `build.gradle.kts` dependencies
+    - `[x]` Gradle Sync
+    - `[x]` Update `MainViewModel.kt` with robust try-finally
+    - `[x]` Update `AuthRepositoryImpl.kt` for better error messages
+- `[x]` Firebase Authentication Integration
+- `[x]` Guest-First Flow & Ultra UI
 - `[x]` User Authentication & Order Flow
 - `[x]` Home Screen Enhancement
 - `[x]` Navigation & Theme Refresh

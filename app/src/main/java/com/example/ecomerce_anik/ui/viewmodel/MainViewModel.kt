@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecomerce_anik.domain.model.CartItem
 import com.example.ecomerce_anik.domain.model.Product
+import com.example.ecomerce_anik.domain.repository.AuthRepository
 import com.example.ecomerce_anik.domain.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -12,8 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    val currentUser = authRepository.currentUser.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), null
+    )
 
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products = _products.asStateFlow()
@@ -139,6 +145,53 @@ class MainViewModel @Inject constructor(
             repository.toggleWishlist(product)
             val isFav = repository.isFavourite(product.id)
             _snackbarEvent.emit(if (isFav) "❤️ Added to wishlist" else "💔 Removed from wishlist")
+        }
+    }
+
+    fun signIn(email: String, password: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                authRepository.signIn(email, password)
+                    .onSuccess {
+                        _snackbarEvent.emit("✅ Welcome back!")
+                        onSuccess()
+                    }
+                    .onFailure {
+                        _snackbarEvent.emit("❌ ${it.localizedMessage ?: "Login failed"}")
+                    }
+            } catch (e: Exception) {
+                _snackbarEvent.emit("❌ Unexpected error: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun signUp(email: String, password: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                authRepository.signUp(email, password)
+                    .onSuccess {
+                        _snackbarEvent.emit("✅ Account created successfully!")
+                        onSuccess()
+                    }
+                    .onFailure {
+                        _snackbarEvent.emit("❌ ${it.localizedMessage ?: "Sign up failed"}")
+                    }
+            } catch (e: Exception) {
+                _snackbarEvent.emit("❌ Unexpected error: ${e.message}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun signOut() {
+        authRepository.signOut()
+        viewModelScope.launch {
+            _snackbarEvent.emit("Signed out")
         }
     }
 

@@ -1,7 +1,7 @@
 package com.example.ecomerce_anik.di
 
-import com.example.ecomerce_anik.data.repository.ProductRepositoryImpl
-import com.example.ecomerce_anik.domain.repository.ProductRepository
+import com.example.ecomerce_anik.data.repository.AuthRepositoryImpl
+import com.example.ecomerce_anik.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindProductRepository(
-        productRepositoryImpl: ProductRepositoryImpl
-    ): ProductRepository
+        productRepositoryImpl: com.example.ecomerce_anik.data.repository.ProductRepositoryImpl
+    ): com.example.ecomerce_anik.domain.repository.ProductRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }

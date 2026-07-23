@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -51,7 +53,33 @@ fun MainScreen(viewModel: MainViewModel, rootNavController: NavHostController) {
     )
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                val isError = data.visuals.message.contains("❌")
+                Card(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isError) Color(0xFFFEE2E2) else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = data.visuals.message,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (isError) Color(0xFF991B1B) else MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        },
         bottomBar = {
             AdvancedBottomBar(navController = navController, items = items)
         }
@@ -65,7 +93,7 @@ fun MainScreen(viewModel: MainViewModel, rootNavController: NavHostController) {
             composable(Screen.Catalog.route) { CatalogScreen(navController, viewModel) }
             composable(Screen.Cart.route) { CartScreen(viewModel, navController) }
             composable(Screen.Wishlist.route) { WishlistScreen(viewModel, navController) }
-            composable(Screen.Profile.route) { ProfileScreen(rootNavController) }
+            composable(Screen.Profile.route) { ProfileScreen(rootNavController, viewModel) }
             composable(Screen.Checkout.route) { CheckoutScreen(navController, rootNavController, viewModel) }
             composable(Screen.ProductDetails.route) { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()

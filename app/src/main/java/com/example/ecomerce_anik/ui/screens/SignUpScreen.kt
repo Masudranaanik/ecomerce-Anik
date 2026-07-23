@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -17,11 +18,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ecomerce_anik.ui.navigation.Screen
 
+import com.example.ecomerce_anik.ui.viewmodel.MainViewModel
+
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, viewModel: MainViewModel) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -87,17 +91,25 @@ fun SignUpScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    // Logic to save user could go here
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.SignUp.route) { inclusive = true }
+                    if (email.isNotBlank() && password.isNotBlank()) {
+                        viewModel.signUp(email, password) {
+                            navController.navigate(Screen.Login.route) {
+                                popUpTo(Screen.SignUp.route) { inclusive = true }
+                            }
+                        }
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                enabled = !isLoading
             ) {
-                Text("Sign Up", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Sign Up", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

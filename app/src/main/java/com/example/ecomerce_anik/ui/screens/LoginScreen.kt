@@ -18,10 +18,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ecomerce_anik.ui.navigation.Screen
 
+import com.example.ecomerce_anik.ui.viewmodel.MainViewModel
+
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: MainViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -75,16 +78,25 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate("main_dashboard") {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                    if (email.isNotBlank() && password.isNotBlank()) {
+                        viewModel.signIn(email, password) {
+                            navController.navigate("main_dashboard") {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        }
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                enabled = !isLoading
             ) {
-                Text("Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

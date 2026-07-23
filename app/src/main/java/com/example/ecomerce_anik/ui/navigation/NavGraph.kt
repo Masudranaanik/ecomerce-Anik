@@ -23,10 +23,10 @@ fun SetupNavGraph(navController: NavHostController) {
             WelcomeScreen(navController = navController)
         }
         composable(Screen.Login.route) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, viewModel = viewModel)
         }
         composable(Screen.SignUp.route) {
-            SignUpScreen(navController = navController)
+            SignUpScreen(navController = navController, viewModel = viewModel)
         }
         composable(Screen.OrderSuccess.route) {
             OrderSuccessScreen(navController = navController)

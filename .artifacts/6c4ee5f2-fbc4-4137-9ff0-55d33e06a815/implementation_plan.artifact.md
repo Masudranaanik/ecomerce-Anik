@@ -1,53 +1,41 @@
-# Implementation Plan - Stunning UI Overhaul & Admin Panel
+# Implementation Plan - Firebase Auth Hang Fix
 
-This plan addresses the product card visibility issues, creates a "stunning" new design, and implements the requested Admin Panel for dynamic product management.
+Fixing the infinite loading issue during Sign Up and Login by adding missing dependencies and improving error handling.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Product Design**: I will switch to a **"Modern Boutique"** style. The card will have a taller aspect ratio, cleaner typography, and the "Add to Cart" button will be integrated more elegantly.
-> - **Admin Panel**: You will be able to add products with Name, Price, Description, and Image URL. These will be saved locally on your device and will appear alongside existing products.
-> - **Visibility Fix**: I will remove rigid height constraints where possible or increase them significantly to ensure the price is never hidden.
+> - **Dependency Fix**: I need to add `kotlinx-coroutines-play-services`. Without this, Firebase's asynchronous tasks (like login/signup) don't play well with Kotlin Coroutines, causing the "infinite spinning" you see.
+> - **Error Handling**: I will wrap the auth calls in more robust error-catching blocks to ensure the loading spinner always stops, even if something goes wrong.
 
 ## Proposed Changes
 
-### 1. "Stunning" Product Card Redesign
+### 1. Build Configuration
 
-#### [MODIFY] [HomeScreen.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/screens/HomeScreen.kt)
-- **Visual Style**:
-    - Use a **very light Primary background** for the image area to make it feel premium.
-    - Remove the hard card border; use a **soft ambient shadow**.
-    - Position the **Price** in a large, bold font at the bottom left.
-    - Change the **Add Button** to a floating circle that sits on the edge of the image and text section.
-- **Layout Fix**: Use `Modifier.heightIn(min = 340.dp)` to allow the card to grow if the title is long, ensuring the price is always visible.
+#### [MODIFY] [libs.versions.toml](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/gradle/libs.versions.toml)
+- Add `kotlinx-coroutines-play-services` library.
+
+#### [MODIFY] [build.gradle.kts (App)](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/build.gradle.kts)
+- Include the new coroutines play services dependency.
 
 ---
 
-### 2. Admin Panel & Local Persistence
+### 2. ViewModel Refinement
 
-#### [NEW] [AdminScreen.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/screens/AdminScreen.kt)
-- A form with `OutlinedTextField`s for Title, Price, Category, Description, and Image URL.
-- An "Upload Product" button with a success animation.
-
-#### [NEW] [ProductEntity.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/data/local/ProductEntity.kt)
-- A new Room entity to store user-added products.
-
-#### [MODIFY] [AppDatabase.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/data/local/AppDatabase.kt) & [ProductRepositoryImpl.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/data/repository/ProductRepositoryImpl.kt)
-- Update the database and repository to merge API products with local products.
+#### [MODIFY] [MainViewModel.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/viewmodel/MainViewModel.kt)
+- Use `try-finally` in `signIn` and `signUp` to guarantee `_isLoading.value = false` is executed.
+- Add more descriptive error logging.
 
 ---
 
-### 3. Navigation & Profile Update
+### 3. Repository Improvements
 
-#### [MODIFY] [ProfileScreen.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/screens/ProfileScreen.kt)
-- Add a dedicated **"Admin Dashboard"** item with a gear icon.
-
-#### [MODIFY] [Screen.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/navigation/Screen.kt) & [NavGraph.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/app/src/main/java/com/example/ecomerce_anik/ui/navigation/NavGraph.kt)
-- Add the `Admin` route and connect it.
+#### [MODIFY] [AuthRepositoryImpl.kt](file:///C:/Users/lab%20506-12/OneDrive/Desktop/Exam/ecomerceAnik/data/repository/AuthRepositoryImpl.kt)
+- Add explicit logging to help debug if the Firebase task hangs again.
 
 ## Verification Plan
 
 ### Manual Verification
-- **UI Check**: Confirm product images are large and clear, and the price is fully visible at the bottom.
-- **Admin Check**: Add a new product via the Admin Panel and verify it appears on the Home Screen immediately.
-- **Persistence**: Restart the app and ensure the added product is still there.
+- **Sign Up**: Attempt to create a new account and verify the spinner stops and it either succeeds or shows an error.
+- **Login**: Attempt to log in and verify the loading indicator resets correctly on both success and failure.
+- **Network Check**: Verify it handles "No Internet" gracefully without hanging.
